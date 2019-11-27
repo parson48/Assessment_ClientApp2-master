@@ -105,7 +105,7 @@ namespace Assessment_ClientApp2
 
                     default:
                         Console.WriteLine();
-                        Console.WriteLine("Please enter a letter A-G or Q for the menu choice.");
+                        Console.WriteLine("\tPlease enter a letter A-G or Q for the menu choice.");
                         DisplayContinuePrompt();
                         break;
                 }
@@ -130,7 +130,7 @@ namespace Assessment_ClientApp2
             do
             {
                 Console.Write("\t");
-                string userResponse = Console.ReadLine();
+                string userResponse = Console.ReadLine().ToLower();
                 switch (userResponse)
                 {
                     case ("a"):
@@ -202,6 +202,7 @@ namespace Assessment_ClientApp2
                                 }
 
                             } while (!validTribe);
+                            validResponse = true;
                             break;
                         }
                     case ("b"):
@@ -265,6 +266,7 @@ namespace Assessment_ClientApp2
                                 }
 
                             } while (!validAttitude);
+                            validResponse = true;
                             break;
                         }
                     case ("c"):
@@ -299,6 +301,7 @@ namespace Assessment_ClientApp2
                                 }
 
                             } while (!validActivity);
+                            validResponse = true;
                             break;
                         }
                     default:
@@ -384,6 +387,8 @@ namespace Assessment_ClientApp2
         static void DisplayViewMonsterDetail(List<Monster> monsters)
         {
             DisplayScreenHeader("Monster Detail");
+            bool validMonster = false;
+            Monster selectedMonster = null;
 
             //
             // display all monster names
@@ -399,21 +404,31 @@ namespace Assessment_ClientApp2
             // get user monster choice
             //
             Console.WriteLine();
-            Console.Write("\tEnter name:");
-            string monsterName = Console.ReadLine();
-
-            //
-            // get monster object
-            //
-            Monster selectedMonster = null;
-            foreach (Monster monster in monsters)
+            do
             {
-                if (monster.Name == monsterName)
+                Console.Write("\tEnter name:");
+                string monsterName = Console.ReadLine();
+
+                //
+                // get monster object
+                //
+
+                foreach (Monster monster in monsters)
                 {
-                    selectedMonster = monster;
-                    break;
+                    if (monster.Name == monsterName)
+                    {
+                        selectedMonster = monster;
+                        validMonster = true;
+                        break;
+                    }
                 }
-            }
+
+                if (!validMonster)
+                {
+                    Console.WriteLine("\tPlease input a valid monster's name.");
+                    Console.WriteLine("\tMake sure to uppercase the first letter only.");
+                }
+            } while (!validMonster);
 
             //
             // display monster detail
@@ -514,7 +529,7 @@ namespace Assessment_ClientApp2
 
                 if (!validBirthDate)
                 {
-                    Console.WriteLine("Please enter a valid birth date.");
+                    Console.WriteLine("\tPlease enter a valid birth date.");
                 }
                 else
                 {
@@ -792,8 +807,8 @@ namespace Assessment_ClientApp2
 
             } while (!validTribe);
 
-            Console.Write($"\tCurrent Birth Date {selectedMonster.BirthDate.Month}/{selectedMonster.BirthDate.Day} New BirthDate:");
             Console.WriteLine("\tUse the format of 'Month/Day', with both being numbers.");
+            Console.Write($"\tCurrent Birth Date {selectedMonster.BirthDate.Month}/{selectedMonster.BirthDate.Day} New BirthDate:");
             do
             {
                 Console.Write("\t");
@@ -828,7 +843,7 @@ namespace Assessment_ClientApp2
             {
                 Console.Write("\tMonster is not currently active. ");
             }
-            Console.Write("New Activity: ");
+            Console.Write("Will Monster be active?: ");
             do
             {
                 userResponse = Console.ReadLine().ToLower();
@@ -880,17 +895,26 @@ namespace Assessment_ClientApp2
             // prompt the user to continue
             //
             Console.WriteLine("\tThe application is ready to write to the data file.");
-            Console.Write("\tEnter 'y' to continue or 'n' to cancel.");
+            Console.Write("\tEnter 'y' to continue or anything else to cancel. ");
             if (Console.ReadLine().ToLower() == "y")
             {
                 DisplayContinuePrompt();
-                WriteToDataFile(monsters);
-                //
-                // TODO process I/O exceptions
-                //
+                try
+                {
+                    WriteToDataFile(monsters);
 
-                Console.WriteLine();
-                Console.WriteLine("\tList written to data the file.");
+                    Console.WriteLine();
+                    Console.WriteLine("\tList written to data the file.");
+                }
+
+                //
+                // If the file IO fails, it tells the user.
+                //
+                catch
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("\tList was unsuccessful in writing to the file - does the file exist and can it be accessed?");
+                }
             }
             else
             {
@@ -943,48 +967,57 @@ namespace Assessment_ClientApp2
             //
             // read all lines in the file
             //
-            string[] monstersString = File.ReadAllLines("Data\\Data.txt");
-
-            //
-            // create monster objects and add to the list
-            //
-            foreach (string monsterString in monstersString)
+            try
             {
+                string[] monstersString = File.ReadAllLines("Data\\Data.txt");
                 //
-                // get individual properties
+                // create monster objects and add to the list
                 //
-                string[] monsterProperties = monsterString.Split(',');
+                foreach (string monsterString in monstersString)
+                {
+                    //
+                    // get individual properties
+                    //
+                    string[] monsterProperties = monsterString.Split(',');
 
-                //
-                // create monster
-                //
-                Monster newMonster = new Monster();
+                    //
+                    // create monster
+                    //
+                    Monster newMonster = new Monster();
 
-                //
-                // update monster property values
-                //
-                newMonster.Name = monsterProperties[0];
+                    //
+                    // update monster property values
+                    //
+                    newMonster.Name = monsterProperties[0];
 
-                int.TryParse(monsterProperties[1], out int age);
-                newMonster.Age = age;
+                    int.TryParse(monsterProperties[1], out int age);
+                    newMonster.Age = age;
 
-                Enum.TryParse(monsterProperties[2], out Monster.EmotionalState attitude);
-                newMonster.Attitude = attitude;
+                    Enum.TryParse(monsterProperties[2], out Monster.EmotionalState attitude);
+                    newMonster.Attitude = attitude;
 
-                Enum.TryParse(monsterProperties[3], out Monster.TribeState tribe);
-                newMonster.Tribe = tribe;
+                    Enum.TryParse(monsterProperties[3], out Monster.TribeState tribe);
+                    newMonster.Tribe = tribe;
 
-                bool.TryParse(monsterProperties[4], out bool active);
-                newMonster.Active = active;
+                    bool.TryParse(monsterProperties[4], out bool active);
+                    newMonster.Active = active;
 
-                DateTime.TryParse(monsterProperties[5], out DateTime birthDate);
-                newMonster.BirthDate = birthDate;
+                    DateTime.TryParse(monsterProperties[5], out DateTime birthDate);
+                    newMonster.BirthDate = birthDate;
 
-                //
-                // add new monster to list
-                //
-                monsters.Add(newMonster);
+                    //
+                    // add new monster to list
+                    //
+                    monsters.Add(newMonster);
+                }
             }
+            catch
+            {
+                DisplayScreenHeader("Failure to Load");
+                Console.WriteLine("\tThe file could not be accessed. Please check to make sure it exists and is accessable.");
+            }
+
+           
 
             return monsters;
         }
@@ -999,13 +1032,39 @@ namespace Assessment_ClientApp2
         /// <param name="monster">monster object</param>
         static void MonsterInfo(Monster monster)
         {
-            Console.WriteLine($"\tName: {monster.Name}");
-            Console.WriteLine($"\tActive: {monster.Active}");
-            Console.WriteLine($"\tAge: {monster.Age}");
-            Console.WriteLine($"\tAttitude: {monster.Attitude}");
-            Console.WriteLine("\t" + monster.Greeting());
-            Console.WriteLine($"\tTribe: {monster.Tribe}");
-            Console.WriteLine($"\tBirth Date: {monster.BirthDate:MM/dd}");
+            try
+            {
+                Console.WriteLine($"\tName: {monster.Name}");
+                Console.WriteLine($"\tActive: {monster.Active}");
+                Console.WriteLine($"\tAge: {monster.Age}");
+                Console.WriteLine($"\tAttitude: {monster.Attitude}");
+                Console.WriteLine($"\tTribe: {monster.Tribe}");
+                Console.WriteLine($"\tBirth Date: {monster.BirthDate:MM/dd}");
+                Console.WriteLine();
+                Console.WriteLine("\t" + monster.Greeting());
+            }
+            catch
+            {
+                try
+                {
+                    char[] splitMonster = monster.ToString().ToCharArray();
+                    splitMonster[0] = char.ToUpper(splitMonster[0]);
+                    splitMonster.ToString();
+
+                    Console.WriteLine($"\tName: {monster.Name}");
+                    Console.WriteLine($"\tActive: {monster.Active}");
+                    Console.WriteLine($"\tAge: {monster.Age}");
+                    Console.WriteLine($"\tAttitude: {monster.Attitude}");
+                    Console.WriteLine($"\tTribe: {monster.Tribe}");
+                    Console.WriteLine($"\tBirth Date: {monster.BirthDate:MM/dd}");
+                    Console.WriteLine();
+                    Console.WriteLine("\t" + monster.Greeting());
+                }
+                catch
+                {
+                    Console.WriteLine("\tInvalid Name.");
+                }
+            }
         }
 
         /// <summary>
