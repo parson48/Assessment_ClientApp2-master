@@ -1,0 +1,6 @@
+﻿Sid,145,happy,desert,true,10/24
+Lucy,125,bored,ocean,true,7/07
+Bill,934,sad,plain,true,4/21
+Sameul,200,angry,underground,true,7/17
+Dylan,234,happy,ocean,true,12/25
+Burger,12,none,plain,false,1/01
