@@ -12,7 +12,7 @@ namespace Assessment_ClientApp2
     // Assessment: Client App 2.0
     // Author: Robert Parsons
     // Dated: 11/27/2019
-    // Level (Novice, Apprentice, or Master): Mostly Master
+    // Level (Novice, Apprentice, or Master): Master
     //
     // **************************************************    
 
