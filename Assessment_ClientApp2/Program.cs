@@ -311,12 +311,30 @@ namespace Assessment_ClientApp2
             //
             // display new list
             //
-            Console.WriteLine("\t***************************");
+            Console.WriteLine("Name".PadLeft(11) + "|" +
+                            "Age".PadLeft(7) + "|" +
+                            "Attitude".PadLeft(11) + "|" +
+                            "Tribe".PadLeft(14) + "|" +
+                            "Active".PadLeft(8) + "|" +
+                            "Birth Date".PadLeft(15));
+            Console.WriteLine("-----------+-------+-----------+--------------+--------+---------------");
             foreach (Monster monster in filteredMonsters)
             {
-                MonsterInfo(monster);
+                Console.Write(monster.Name.PadLeft(11) + "|");
+                Console.Write($"{monster.Age}".PadLeft(7) + "|");
+                Console.Write($"{monster.Attitude}".PadLeft(11) + "|");
+                Console.Write($"{monster.Tribe}".PadLeft(14) + "|");
+                if (monster.Active == true)
+                {
+                    Console.Write($"yes".PadLeft(8) + "|");
+                }
+                else
+                {
+                    Console.Write($"no".PadLeft(8) + "|");
+                }
+
+                Console.Write(String.Format($"{monster.BirthDate:MM/dd}".PadLeft(15)));
                 Console.WriteLine();
-                Console.WriteLine("\t***************************");
             }
 
             DisplayContinuePrompt();
@@ -330,22 +348,29 @@ namespace Assessment_ClientApp2
         {
             DisplayScreenHeader("All Monsters");
 
-            //Console.WriteLine("\t***************************");
-            //foreach (Monster monster in monsters)
-            //{
-            //    MonsterInfo(monster);
-            //    Console.WriteLine();
-            //    Console.WriteLine("\t***************************");
-            //}
-
+            Console.WriteLine("Name".PadLeft(11) + "|" +
+                "Age".PadLeft(7) + "|" +
+                "Attitude".PadLeft(11) + "|" +
+                "Tribe".PadLeft(14) + "|" +
+                "Active".PadLeft(8) + "|" +
+                "Birth Date".PadLeft(15));
+            Console.WriteLine("-----------+-------+-----------+--------------+--------+---------------");
             foreach (Monster monster in monsters)
             {
-                Console.Write(String.Format("0,-5"), $"{monster.Name}");
-                Console.Write($"{-5} {monster.Age}");
-                Console.Write($"{-5} {monster.Attitude}");
-                Console.Write($"{-5} {monster.Tribe}");
-                Console.Write($"{-5} {monster.Active}");
-                Console.Write($"{-5} {monster.BirthDate:MM/dd}");
+                Console.Write(monster.Name.PadLeft(11) + "|");
+                Console.Write($"{monster.Age}".PadLeft(7) + "|");
+                Console.Write($"{monster.Attitude}".PadLeft(11) + "|");
+                Console.Write($"{monster.Tribe}".PadLeft(14) + "|");
+                if (monster.Active == true)
+                {
+                    Console.Write($"yes".PadLeft(8) + "|");
+                }
+                else
+                {
+                    Console.Write($"no".PadLeft(8) + "|");
+                }
+
+                Console.Write(String.Format($"{monster.BirthDate:MM/dd}".PadLeft(15)));
                 Console.WriteLine();
             }
 
@@ -592,6 +617,20 @@ namespace Assessment_ClientApp2
             bool validTribe;
             bool validActivity;
             bool validDateTime;
+            List<Monster> activeMonsters = new List<Monster>();
+            List<Monster> inactiveMonsters = new List<Monster>();
+
+            foreach (Monster monster in monsters)
+            {
+                if (monster.Active == true)
+                {
+                    activeMonsters.Add(monster);
+                }
+                else
+                {
+                    inactiveMonsters.Add(monster);
+                }
+            }
 
             do
             {
@@ -600,9 +639,18 @@ namespace Assessment_ClientApp2
                 //
                 // display all monster names
                 //
-                Console.WriteLine("\tMonster Names");
+                Console.WriteLine("\tActive Monsters");
                 Console.WriteLine("\t-------------");
-                foreach (Monster monster in monsters)
+                foreach (Monster monster in activeMonsters)
+                {
+                    Console.WriteLine("\t" + monster.Name);
+                }
+
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine("\tInactive Monsters");
+                Console.WriteLine("\t-------------");
+                foreach (Monster monster in inactiveMonsters)
                 {
                     Console.WriteLine("\t" + monster.Name);
                 }
